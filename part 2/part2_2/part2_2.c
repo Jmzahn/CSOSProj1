@@ -25,8 +25,10 @@ int main(int argc, char *argv[])
 void print_hello()
 {
     int processID;
+    int parentProcessID;
     processID = getpid();
-    printf("Hello from process: %d\n",processID);
+    parentProcessID = getppid();
+    printf("Hello from process: %d, my parent is: %d\n",processID,parentProcessID);
 }
 
 void processCreator(int numP)
@@ -42,13 +44,16 @@ void processCreator(int numP)
             break;
         }
     }
-    for(int i = numP-1; i>=0; i--)
+    print_hello();
+    exit(0);
+
+    /*for(int i = numP-1; i>=0; i--)
     {
         if(status[i] == 0)
         {
             print_hello();
             exit(0);
         }
-    }
+    }*/
     
 }
