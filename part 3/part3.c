@@ -8,8 +8,26 @@ void print_hello();
 
 void processCreator(int numP, int numC);
 
+void consumer();
+
+void producer();
+
+int produce_item();
+
+void insert_item(int item);
+
+int remove_item();
+
+void wakeup();
+
+pthread_mutex_t task_queue_lock;
+int task_available;
+
 int main(int argc, char *argv[])
 {
+    task_available = 0;
+    pthread_mutex_init(&task_queue_lock, NULL);
+
     if(argc != 3){
         return(-1);
     }
@@ -58,5 +76,52 @@ void processCreator(int numP, int numC)
             exit(0);
         }
     }*/
+}
+
+#define N 100
+int count = 0;
+
+void *consumer()
+{
+    int item;
+    int removed;
+
+    while(TRUE){
+        removed = 0;
+        while(removed == 0){
+            pthread_mutex_lock(&task_queue_lock);
+            if(task_available == 1){
+                item = remove_item();
+                task_available = 0;
+                removed = 1;
+            }
+            pthread_mutex_unlock(&task_queue_lock);
+        }
+    }
+}
+
+void *producer()
+{
+    int item;
+    int inserted;
+    int total = 64;
+    int x = 0;
+    while(x<total){
+        inserted = 0;
+        item = produce_item();
+        while(inserted == 0){
+            pthread_mutex_lock(&task_queue_lock);
+            if (task_available == 0){
+                insert_item(item);
+                task_available = 1;
+                inserted = 1;
+            }
+            pthread_mutex_unlock(&task_queue_lock);
+        }
+    }
+}
+
+int produce_item()
+{
     
 }
